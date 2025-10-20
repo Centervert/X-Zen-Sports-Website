@@ -1,10 +1,9 @@
 import { Ratelimit } from "@upstash/ratelimit"
 import { Redis } from "@upstash/redis"
 
-// Create a Redis instance (will use environment variables)
 const redis = new Redis({
-  url: process.env["UPSTASH-KV_KV_REST_API_URL"] || "https://placeholder.com",
-  token: process.env["UPSTASH-KV_KV_REST_API_TOKEN"] || "placeholder",
+  url: process.env.UPSTASH_KV_REST_API_URL || "https://placeholder.com",
+  token: process.env.UPSTASH_KV_REST_API_TOKEN || "placeholder",
 })
 
 // Create rate limiters for different endpoints
