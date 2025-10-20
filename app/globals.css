@@ -1,0 +1,207 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Updated to match X-Zen Sports brand colors from logo */
+  --background: #ffffff;
+  --foreground: #1f2937;
+  --card: #f9fafb;
+  --card-foreground: #1f2937;
+  --popover: #ffffff;
+  --popover-foreground: #1f2937;
+  --primary: #dc2626; /* X-Zen brand red */
+  --primary-foreground: #ffffff;
+  --secondary: #000000; /* X-Zen brand black */
+  --secondary-foreground: #ffffff;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --accent: #dc2626; /* X-Zen brand red for accents */
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e5e7eb;
+  --input: #f9fafb;
+  --ring: rgba(220, 38, 38, 0.5); /* Red ring to match brand */
+  --radius: 0.75rem;
+}
+
+.dark {
+  /* Dark mode with X-Zen brand colors */
+  --background: #0f0f0f; /* Deep black background */
+  --foreground: #f9fafb; /* Light text */
+  --card: #1f1f1f; /* Dark card background */
+  --card-foreground: #f9fafb;
+  --popover: #1f1f1f;
+  --popover-foreground: #f9fafb;
+  --primary: #ef4444; /* Brighter red for dark mode */
+  --primary-foreground: #ffffff;
+  --secondary: #ffffff; /* White for contrast in dark mode */
+  --secondary-foreground: #000000;
+  --muted: #374151;
+  --muted-foreground: #9ca3af;
+  --accent: #ef4444;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #374151;
+  --input: #1f1f1f;
+  --ring: rgba(239, 68, 68, 0.5);
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Optimized scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(220, 38, 38, 0.8);
+  }
+}
+
+/* Essential animations for visual appeal */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(220, 38, 38, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(220, 38, 38, 0.5); }
+}
+
+@keyframes heroFadeInUp {
+  0% { opacity: 0; transform: translateY(60px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes logoScale {
+  0% { opacity: 0; transform: scale(0.8) translateY(30px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes slideInLeft {
+  0% { opacity: 0; transform: translateX(-100px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  0% { opacity: 0; transform: translateX(100px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes parallaxFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(2deg); }
+}
+
+@keyframes scrollReveal {
+  0% { opacity: 0; transform: translateY(50px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-glow { animation: glow 2s ease-in-out infinite; }
+.animate-hero-fade-in { animation: heroFadeInUp 1.2s ease-out forwards; }
+.animate-logo-scale { animation: logoScale 1.5s ease-out 0.3s forwards; opacity: 0; }
+.animate-gradient { background-size: 200% auto; animation: gradient 3s ease infinite; }
+.animate-slide-in-left { animation: slideInLeft 1s ease-out 0.8s forwards; opacity: 0; }
+.animate-slide-in-right { animation: slideInRight 1s ease-out 1s forwards; opacity: 0; }
+.animate-parallax-float { animation: parallaxFloat 8s ease-in-out infinite; }
+.animate-scroll-reveal { animation: scrollReveal 0.8s ease-out forwards; }
+
+/* Scroll-triggered animations */
+.scroll-animate {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease-out;
+}
+
+.scroll-animate.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Enhanced parallax effect */
+.parallax-bg {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Glass morphism effects */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Accessibility: Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-gradient,
+  .animate-parallax-float,
+  .animate-pulse,
+  .animate-logo-scale,
+  .animate-hero-fade-in {
+    animation: none !important;
+  }
+  
+  .parallax-bg {
+    transform: none !important;
+  }
+  
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
