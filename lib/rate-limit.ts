@@ -3,8 +3,8 @@ import { Redis } from "@upstash/redis"
 
 // Create a Redis instance (will use environment variables)
 const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || "https://placeholder.com",
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || "placeholder",
+  url: process.env["UPSTASH-KV_KV_REST_API_URL"] || "https://placeholder.com",
+  token: process.env["UPSTASH-KV_KV_REST_API_TOKEN"] || "placeholder",
 })
 
 // Create rate limiters for different endpoints
@@ -23,11 +23,7 @@ export const apiLimiter = new Ratelimit({
 // Fallback rate limiter for when Redis is not available
 export const memoryRateLimit = new Map<string, { count: number; resetTime: number }>()
 
-export function simpleRateLimit(
-  identifier: string,
-  limit: number = 5,
-  windowMs: number = 60000
-): boolean {
+export function simpleRateLimit(identifier: string, limit = 5, windowMs = 60000): boolean {
   const now = Date.now()
   const key = identifier
   const record = memoryRateLimit.get(key)
