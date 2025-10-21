@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { useState } from "react"
+import { checkRateLimit, recordSubmission } from "@/lib/client-rate-limit"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -19,10 +20,19 @@ export default function ContactPage() {
     comment: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error" | "rate-limited">("idle")
+  const [rateLimitMessage, setRateLimitMessage] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    const rateCheck = checkRateLimit()
+    if (!rateCheck.allowed) {
+      setSubmitStatus("rate-limited")
+      setRateLimitMessage(`Too many submissions. Please wait ${rateCheck.remainingTime} seconds before trying again.`)
+      return
+    }
+
     setIsSubmitting(true)
     setSubmitStatus("idle")
 
@@ -38,6 +48,7 @@ export default function ContactPage() {
       })
 
       if (response.ok) {
+        recordSubmission()
         setSubmitStatus("success")
         setFormData({
           location: "",
@@ -189,6 +200,9 @@ export default function ContactPage() {
                 )}
                 {submitStatus === "error" && (
                   <p className="text-red-500 text-center">There was an error sending your message. Please try again.</p>
+                )}
+                {submitStatus === "rate-limited" && (
+                  <p className="text-yellow-500 text-center font-semibold">{rateLimitMessage}</p>
                 )}
               </form>
 

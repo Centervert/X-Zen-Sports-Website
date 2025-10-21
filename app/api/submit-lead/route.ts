@@ -1,31 +1,18 @@
 import { NextResponse } from "next/server"
-import { simpleRateLimit } from "@/lib/rate-limit"
-import { 
-  tourRequestSchema, 
-  contactFormSchema, 
-  freeClassSchema, 
+import {
+  tourRequestSchema,
+  contactFormSchema,
+  freeClassSchema,
   consultationSchema,
   sanitizeString,
   sanitizeEmail,
-  validateFormData 
+  validateFormData,
 } from "@/lib/validation"
 
 export async function POST(request: Request) {
   try {
-    // Get client IP for rate limiting
-    const forwarded = request.headers.get("x-forwarded-for")
-    const ip = forwarded ? forwarded.split(/, /)[0] : "127.0.0.1"
-    
-    // Apply rate limiting
-    if (!simpleRateLimit(ip, 5, 60000)) { // 5 requests per minute
-      return NextResponse.json(
-        { error: "Too many requests. Please try again later." },
-        { status: 429 }
-      )
-    }
-
     const body = await request.json()
-    
+
     // Determine which schema to use based on formType
     let schema
     switch (body.formType) {
@@ -42,19 +29,13 @@ export async function POST(request: Request) {
         schema = consultationSchema
         break
       default:
-        return NextResponse.json(
-          { error: "Invalid form type" },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: "Invalid form type" }, { status: 400 })
     }
 
     // Validate and sanitize input
     const validation = validateFormData(body, schema)
     if (!validation.success) {
-      return NextResponse.json(
-        { error: "Validation failed", details: validation.errors },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: "Validation failed", details: validation.errors }, { status: 400 })
     }
 
     // Sanitize the validated data
