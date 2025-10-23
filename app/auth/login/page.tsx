@@ -24,8 +24,6 @@ export default function LoginPage() {
     setIsLoading(true)
     setError(null)
 
-    console.log("[v0] Client: Attempting login for:", email)
-
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -33,24 +31,15 @@ export default function LoginPage() {
       })
 
       if (error) {
-        console.error("[v0] Client: Login error:", error.message)
-        throw error
+        if (error.message === "Invalid login credentials") {
+          setError(
+            "Invalid email or password. Please check your credentials and try again. If you haven't created an account yet, please create one in the Supabase dashboard.",
+          )
+        } else {
+          setError(error.message)
+        }
+        return
       }
-
-      console.log("[v0] Client: Login successful, user:", data.user?.email)
-      console.log("[v0] Client: Session data:", {
-        hasSession: !!data.session,
-        accessToken: data.session?.access_token?.substring(0, 20) + "...",
-        expiresAt: data.session?.expires_at,
-      })
-
-      // Check what cookies are set
-      console.log("[v0] Client: Document cookies:", document.cookie)
-
-      // Wait a moment for cookies to be set
-      await new Promise((resolve) => setTimeout(resolve, 500))
-
-      console.log("[v0] Client: Cookies after delay:", document.cookie)
 
       // Refresh the router to update server components with new session
       router.refresh()
@@ -58,7 +47,6 @@ export default function LoginPage() {
       // Navigate to admin
       router.push("/admin")
     } catch (error: unknown) {
-      console.error("[v0] Client: Caught error:", error)
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
       setIsLoading(false)
@@ -105,7 +93,11 @@ export default function LoginPage() {
                     className="bg-zinc-900 border-zinc-800 text-white"
                   />
                 </div>
-                {error && <p className="text-sm text-red-500">{error}</p>}
+                {error && (
+                  <div className="rounded-md bg-red-950/50 border border-red-900 p-3">
+                    <p className="text-sm text-red-400">{error}</p>
+                  </div>
+                )}
                 <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white" disabled={isLoading}>
                   {isLoading ? "Logging in..." : "Login"}
                 </Button>
