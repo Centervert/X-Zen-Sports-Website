@@ -5,13 +5,23 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft, Calendar, Clock, User } from "lucide-react"
 
+function isValidUUID(str: string): boolean {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  return uuidRegex.test(str)
+}
+
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const supabase = await createClient()
-  const { data: post } = await supabase
-    .from("blog_posts")
-    .select("*")
-    .or(`slug.eq.${params.slug},id.eq.${params.slug}`)
-    .single()
+
+  let query = supabase.from("blog_posts").select("*")
+
+  if (isValidUUID(params.slug)) {
+    query = query.or(`slug.eq.${params.slug},id.eq.${params.slug}`)
+  } else {
+    query = query.eq("slug", params.slug)
+  }
+
+  const { data: post } = await query.single()
 
   if (!post) {
     return {
@@ -37,12 +47,15 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   const supabase = await createClient()
 
-  const { data: post } = await supabase
-    .from("blog_posts")
-    .select("*")
-    .or(`slug.eq.${params.slug},id.eq.${params.slug}`)
-    .eq("published", true)
-    .single()
+  let query = supabase.from("blog_posts").select("*")
+
+  if (isValidUUID(params.slug)) {
+    query = query.or(`slug.eq.${params.slug},id.eq.${params.slug}`)
+  } else {
+    query = query.eq("slug", params.slug)
+  }
+
+  const { data: post, error } = await query.eq("published", true).single()
 
   if (!post) {
     notFound()
