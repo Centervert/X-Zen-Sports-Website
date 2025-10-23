@@ -14,7 +14,7 @@ export async function middleware(request: NextRequest) {
   // Content Security Policy with Trusted Types
   supabaseResponse.headers.set(
     "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://cdn.callrail.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https://hooks.zapier.com https://services.leadconnectorhq.com https://rest.gohighlevel.com https://www.google-analytics.com; frame-src 'none';",
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://cdn.callrail.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https://hooks.zapier.com https://services.leadconnectorhq.com https://rest.gohighlevel.com https://www.google-analytics.com https://*.supabase.co; frame-src 'none';",
   )
 
   // HSTS (only in production)
