@@ -1,25 +1,4 @@
-import { Ratelimit } from "@upstash/ratelimit"
-import { Redis } from "@upstash/redis"
-
-const redis = new Redis({
-  url: process.env.UPSTASH_KV_REST_API_URL || "https://placeholder.com",
-  token: process.env.UPSTASH_KV_REST_API_TOKEN || "placeholder",
-})
-
-// Create rate limiters for different endpoints
-export const formSubmissionLimiter = new Ratelimit({
-  redis: redis,
-  limiter: Ratelimit.slidingWindow(5, "1 m"), // 5 requests per minute
-  analytics: true,
-})
-
-export const apiLimiter = new Ratelimit({
-  redis: redis,
-  limiter: Ratelimit.slidingWindow(10, "1 m"), // 10 requests per minute
-  analytics: true,
-})
-
-// Fallback rate limiter for when Redis is not available
+// In-memory rate limiter - no external dependencies needed
 export const memoryRateLimit = new Map<string, { count: number; resetTime: number }>()
 
 export function simpleRateLimit(identifier: string, limit = 5, windowMs = 60000): boolean {
@@ -38,4 +17,19 @@ export function simpleRateLimit(identifier: string, limit = 5, windowMs = 60000)
 
   record.count++
   return true
+}
+
+// Export as default rate limiter
+export const formSubmissionLimiter = {
+  limit: (identifier: string) => {
+    const allowed = simpleRateLimit(identifier, 5, 60000)
+    return Promise.resolve({ success: allowed })
+  },
+}
+
+export const apiLimiter = {
+  limit: (identifier: string) => {
+    const allowed = simpleRateLimit(identifier, 10, 60000)
+    return Promise.resolve({ success: allowed })
+  },
 }
