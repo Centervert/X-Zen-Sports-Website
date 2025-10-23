@@ -36,6 +36,9 @@ export default function LoginPage() {
       }
 
       if (data.user) {
+        localStorage.setItem("admin_authenticated", "true")
+        localStorage.setItem("admin_user", JSON.stringify(data.user))
+
         // Force a full page reload to ensure session is properly set
         window.location.href = "/admin"
       }
