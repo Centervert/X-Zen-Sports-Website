@@ -20,6 +20,7 @@ export function Navigation() {
   }, [])
 
   const navLinks = [
+    { href: "/", label: "Home" },
     { href: "/coaching", label: "Coaches" },
     { href: "/contact", label: "Contact" },
     { href: "/blog", label: "Blog" },
@@ -69,6 +70,9 @@ export function Navigation() {
           </Link>
 
           <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">
+            <Link href="/" className="text-white hover:text-primary transition-colors font-medium">
+              Home
+            </Link>
             <div className="relative" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
               <button className="flex items-center gap-1 text-white hover:text-primary transition-colors font-medium">
                 Programs
@@ -98,15 +102,17 @@ export function Navigation() {
                 </div>
               )}
             </div>
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-white hover:text-primary transition-colors font-medium"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks
+              .filter((link) => link.label !== "Home")
+              .map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-white hover:text-primary transition-colors font-medium"
+                >
+                  {link.label}
+                </Link>
+              ))}
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
@@ -133,6 +139,13 @@ export function Navigation() {
         {isOpen && (
           <div className="lg:hidden py-4 border-t border-white/10 animate-in slide-in-from-top-2 duration-200">
             <div className="space-y-1">
+              <Link
+                href="/"
+                className="block py-3 px-2 text-white hover:text-primary hover:bg-white/5 rounded-lg transition-colors font-medium"
+                onClick={() => setIsOpen(false)}
+              >
+                Home
+              </Link>
               <button
                 onClick={() => setIsProgramsOpen(!isProgramsOpen)}
                 className="flex items-center justify-between w-full py-3 px-2 text-white hover:text-primary hover:bg-white/5 rounded-lg transition-colors font-medium"
@@ -165,16 +178,18 @@ export function Navigation() {
                 </div>
               )}
             </div>
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="block py-3 px-2 text-white hover:text-primary hover:bg-white/5 rounded-lg transition-colors font-medium"
-                onClick={() => setIsOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks
+              .filter((link) => link.label !== "Home")
+              .map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block py-3 px-2 text-white hover:text-primary hover:bg-white/5 rounded-lg transition-colors font-medium"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
           </div>
         )}
       </div>
