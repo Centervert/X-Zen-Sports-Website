@@ -103,6 +103,10 @@ export default function LoginPage() {
                 </Button>
               </div>
               <div className="mt-4 text-center text-sm text-zinc-400">
+                <Link href="/auth/signup" className="underline underline-offset-4 hover:text-white">
+                  Don't have an account? Sign up
+                </Link>
+                <span className="mx-2">•</span>
                 <Link href="/" className="underline underline-offset-4 hover:text-white">
                   Back to home
                 </Link>
