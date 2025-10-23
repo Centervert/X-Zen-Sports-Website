@@ -15,11 +15,11 @@ export async function middleware(request: NextRequest) {
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.callrail.com https://tags.tiqcdn.com https://googleads.g.doubleclick.net",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.callrail.com https://tags.tiqcdn.com https://googleads.g.doubleclick.net https://tags.srv.stackadapt.com",
       "style-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://fonts.googleapis.com",
       "img-src 'self' data: https: blob:",
       "font-src 'self' data: https: https://fonts.gstatic.com",
-      "connect-src 'self' https://hooks.zapier.com https://services.leadconnectorhq.com https://rest.gohighlevel.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://cdn.callrail.com https://*.supabase.co",
+      "connect-src 'self' https://hooks.zapier.com https://services.leadconnectorhq.com https://rest.gohighlevel.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://cdn.callrail.com https://*.supabase.co https://www.google.com",
       "frame-src https://www.googletagmanager.com",
       "object-src 'none'",
       "base-uri 'self'",
