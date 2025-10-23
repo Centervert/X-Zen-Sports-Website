@@ -13,5 +13,11 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json({ posts })
+  const postsWithInfo = posts?.map((post) => ({
+    ...post,
+    slugLength: post.slug?.length || 0,
+    fullSlug: post.slug,
+  }))
+
+  return NextResponse.json({ posts: postsWithInfo }, null, 2)
 }
