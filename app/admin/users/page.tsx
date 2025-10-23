@@ -34,36 +34,24 @@ export default function UsersPage() {
       const supabase = createClient()
 
       try {
-        console.log("[v0] Fetching users from API...")
-        // Get the current session to use the access token
         const {
           data: { session },
         } = await supabase.auth.getSession()
 
         if (session) {
-          console.log("[v0] Session found, calling API...")
-          // Fetch users using the admin API
           const response = await fetch("/api/admin/users", {
             headers: {
               Authorization: `Bearer ${session.access_token}`,
             },
           })
 
-          console.log("[v0] API response status:", response.status)
-
           if (response.ok) {
             const data = await response.json()
-            console.log("[v0] Users data:", data)
             setUsers(data.users || [])
-          } else {
-            const errorData = await response.json()
-            console.error("[v0] API error:", errorData)
           }
-        } else {
-          console.log("[v0] No session found")
         }
       } catch (error) {
-        console.error("[v0] Error fetching users:", error)
+        console.error("Error fetching users:", error)
       }
     }
 

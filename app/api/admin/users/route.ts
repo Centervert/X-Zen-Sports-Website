@@ -18,13 +18,11 @@ export async function GET() {
     const { data, error } = await adminClient.auth.admin.listUsers()
 
     if (error) {
-      console.error("[v0] Error fetching users:", error)
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
     return NextResponse.json({ users: data.users })
   } catch (error) {
-    console.error("[v0] Error in users API:", error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 },
