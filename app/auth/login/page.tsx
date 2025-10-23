@@ -38,6 +38,19 @@ export default function LoginPage() {
       }
 
       console.log("[v0] Client: Login successful, user:", data.user?.email)
+      console.log("[v0] Client: Session data:", {
+        hasSession: !!data.session,
+        accessToken: data.session?.access_token?.substring(0, 20) + "...",
+        expiresAt: data.session?.expires_at,
+      })
+
+      // Check what cookies are set
+      console.log("[v0] Client: Document cookies:", document.cookie)
+
+      // Wait a moment for cookies to be set
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      console.log("[v0] Client: Cookies after delay:", document.cookie)
 
       // Refresh the router to update server components with new session
       router.refresh()

@@ -13,6 +13,18 @@ export async function createClient() {
     urlPrefix: supabaseUrl?.substring(0, 20),
   })
 
+  const allCookies = cookieStore.getAll()
+  console.log("[v0] Server client: Available cookies:", {
+    count: allCookies.length,
+    names: allCookies.map((c) => c.name),
+    supabaseCookies: allCookies
+      .filter((c) => c.name.includes("supabase") || c.name.includes("sb-"))
+      .map((c) => ({
+        name: c.name,
+        valuePrefix: c.value.substring(0, 20) + "...",
+      })),
+  })
+
   if (!supabaseUrl || !supabaseAnonKey) {
     console.error("[v0] Server client: Missing Supabase credentials!")
     throw new Error("Supabase credentials are required")
