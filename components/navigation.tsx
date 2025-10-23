@@ -115,7 +115,7 @@ export function Navigation() {
               className="flex items-center gap-1.5 sm:gap-2 text-white hover:text-primary transition-colors group bg-white/5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-white/10"
             >
               <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-primary group-hover:scale-110 transition-transform flex-shrink-0" />
-              <span className="font-semibold text-sm sm:text-base lg:text-lg hidden xs:inline whitespace-nowrap">
+              <span className="font-semibold text-sm sm:text-base lg:text-lg hidden md:inline whitespace-nowrap">
                 (864) 214-3174
               </span>
             </a>
