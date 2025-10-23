@@ -11,7 +11,6 @@ export async function updateSession(request: NextRequest) {
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
     if (!supabaseUrl || !supabaseAnonKey) {
-      console.log("[v0] Middleware: Supabase credentials not available")
       return supabaseResponse
     }
 
@@ -27,9 +26,7 @@ export async function updateSession(request: NextRequest) {
               request,
             })
             cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options))
-          } catch (error) {
-            console.error("[v0] Cookie setting error:", error)
-          }
+          } catch (error) {}
         },
       },
     })
@@ -50,13 +47,10 @@ export async function updateSession(request: NextRequest) {
         url.pathname = "/admin"
         return NextResponse.redirect(url)
       }
-    } catch (authError) {
-      console.error("[v0] Auth check error:", authError)
-    }
+    } catch (authError) {}
 
     return supabaseResponse
   } catch (error) {
-    console.error("[v0] Middleware error:", error)
     return supabaseResponse
   }
 }
