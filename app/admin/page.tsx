@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation"
+"use client"
 import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -6,21 +6,10 @@ import Link from "next/link"
 import { LogOut, Plus, FileText } from "lucide-react"
 
 export default async function AdminDashboard() {
-  console.log("[v0] Admin page: Checking authentication")
-
-  const supabase = await createClient()
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect("/auth/login")
-  }
-
-  console.log("[v0] Admin page: User authenticated, loading dashboard")
+  console.log("[v0] Admin page: Loading dashboard")
 
   // Get blog post stats
+  const supabase = await createClient()
   const { data: posts, count: totalPosts } = await supabase
     .from("blog_posts")
     .select("*", { count: "exact" })
@@ -39,23 +28,17 @@ export default async function AdminDashboard() {
             </Link>
             <h1 className="text-2xl font-bold">Admin Dashboard</h1>
           </div>
-          <form
-            action={async () => {
-              "use server"
-              const supabase = await createClient()
-              await supabase.auth.signOut()
-              redirect("/auth/login")
+          <Button
+            onClick={() => {
+              localStorage.removeItem("admin_authenticated")
+              window.location.href = "/auth/login"
             }}
+            variant="outline"
+            className="border-zinc-800 text-white hover:bg-zinc-900 bg-transparent"
           >
-            <Button
-              type="submit"
-              variant="outline"
-              className="border-zinc-800 text-white hover:bg-zinc-900 bg-transparent"
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </Button>
-          </form>
+            <LogOut className="mr-2 h-4 w-4" />
+            Logout
+          </Button>
         </div>
       </div>
 
