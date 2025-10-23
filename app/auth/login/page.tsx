@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -9,9 +8,7 @@ import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-
-const HARDCODED_EMAIL = "admin@xzensports.com"
-const HARDCODED_PASSWORD = "admin123"
+import { createClient } from "@/lib/supabase/client"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -19,18 +16,31 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const supabase = createClient()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
 
-    if (email === HARDCODED_EMAIL && password === HARDCODED_PASSWORD) {
-      // Set a simple auth flag in localStorage
-      localStorage.setItem("admin_authenticated", "true")
-      window.location.href = "/admin"
-    } else {
-      setError("Invalid credentials. Use admin@xzensports.com / admin123")
+    try {
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (signInError) {
+        setError(signInError.message)
+        setIsLoading(false)
+        return
+      }
+
+      if (data.user) {
+        // Force a full page reload to ensure session is properly set
+        window.location.href = "/admin"
+      }
+    } catch (err) {
+      setError("An unexpected error occurred")
       setIsLoading(false)
     }
   }
@@ -55,7 +65,7 @@ export default function LoginPage() {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="admin@xzensports.com"
+                    placeholder="your@email.com"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -83,8 +93,11 @@ export default function LoginPage() {
                 <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white" disabled={isLoading}>
                   {isLoading ? "Logging in..." : "Login"}
                 </Button>
-                <div className="rounded-md bg-blue-950/50 border border-blue-900 p-3">
-                  <p className="text-xs text-blue-400">Temporary login: admin@xzensports.com / admin123</p>
+                <div className="text-center text-sm text-zinc-400">
+                  Don't have an account?{" "}
+                  <Link href="/auth/signup" className="text-red-500 hover:text-red-400 underline underline-offset-4">
+                    Sign up
+                  </Link>
                 </div>
               </div>
               <div className="mt-4 text-center text-sm text-zinc-400">

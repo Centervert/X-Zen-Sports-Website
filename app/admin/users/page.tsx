@@ -12,6 +12,7 @@ export default function UsersPage() {
   const router = useRouter()
   const [currentUser, setCurrentUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [users, setUsers] = useState<any[]>([])
 
   useEffect(() => {
     async function loadUser() {
@@ -22,7 +23,15 @@ export default function UsersPage() {
       setCurrentUser(user)
       setLoading(false)
     }
+
+    async function fetchUsers() {
+      const supabase = createClient()
+      const { data } = await supabase.from("users").select("*")
+      setUsers(data || [])
+    }
+
     loadUser()
+    fetchUsers()
   }, [])
 
   const handleLogout = () => {
@@ -89,30 +98,32 @@ export default function UsersPage() {
         </div>
 
         <div className="grid gap-4">
-          <Card className="border-zinc-800 bg-zinc-950">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <Users className="h-5 w-5 text-red-600" />
-                    <h4 className="text-lg font-semibold text-white">admin@xzensports.com</h4>
-                    <span className="px-2 py-1 text-xs rounded-full bg-green-600/20 text-green-400">Active</span>
-                  </div>
-                  <div className="flex items-center gap-4 text-sm text-zinc-400 mt-3">
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4" />
-                      <span>admin@xzensports.com</span>
+          {users.map((user) => (
+            <Card key={user.id} className="border-zinc-800 bg-zinc-950">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <Users className="h-5 w-5 text-red-600" />
+                      <h4 className="text-lg font-semibold text-white">{user.email}</h4>
+                      <span className="px-2 py-1 text-xs rounded-full bg-green-600/20 text-green-400">Active</span>
                     </div>
-                    <span>•</span>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      <span>Admin User</span>
+                    <div className="flex items-center gap-4 text-sm text-zinc-400 mt-3">
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-4 w-4" />
+                        <span>{user.email}</span>
+                      </div>
+                      <span>•</span>
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        <span>{user.role}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          ))}
 
           <Card className="border-zinc-800 bg-zinc-950">
             <CardHeader>
