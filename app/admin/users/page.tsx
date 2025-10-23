@@ -1,24 +1,42 @@
-import { redirect } from "next/navigation"
-import { createClient } from "@/lib/supabase/server"
+"use client"
+
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { LogOut, Plus, Users, Mail, Calendar } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase/client"
 
-export default async function UsersPage() {
-  const supabase = await createClient()
+export default function UsersPage() {
+  const router = useRouter()
+  const [currentUser, setCurrentUser] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  useEffect(() => {
+    async function loadUser() {
+      const supabase = createClient()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      setCurrentUser(user)
+      setLoading(false)
+    }
+    loadUser()
+  }, [])
 
-  if (!user) {
-    redirect("/auth/login")
+  const handleLogout = () => {
+    localStorage.removeItem("admin_authenticated")
+    router.push("/auth/login")
   }
 
-  // Get all users from auth.users (requires service role key in production)
-  // For now, we'll show the current user and provide a form to add new users
-  const currentUser = user
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-zinc-400">Loading...</div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -30,23 +48,14 @@ export default async function UsersPage() {
             </Link>
             <h1 className="text-2xl font-bold">Admin Dashboard</h1>
           </div>
-          <form
-            action={async () => {
-              "use server"
-              const supabase = await createClient()
-              await supabase.auth.signOut()
-              redirect("/auth/login")
-            }}
+          <Button
+            onClick={handleLogout}
+            variant="outline"
+            className="border-zinc-800 text-white hover:bg-zinc-900 bg-transparent"
           >
-            <Button
-              type="submit"
-              variant="outline"
-              className="border-zinc-800 text-white hover:bg-zinc-900 bg-transparent"
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </Button>
-          </form>
+            <LogOut className="mr-2 h-4 w-4" />
+            Logout
+          </Button>
         </div>
       </div>
 
@@ -86,18 +95,18 @@ export default async function UsersPage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
                     <Users className="h-5 w-5 text-red-600" />
-                    <h4 className="text-lg font-semibold text-white">{currentUser.email}</h4>
+                    <h4 className="text-lg font-semibold text-white">admin@xzensports.com</h4>
                     <span className="px-2 py-1 text-xs rounded-full bg-green-600/20 text-green-400">Active</span>
                   </div>
                   <div className="flex items-center gap-4 text-sm text-zinc-400 mt-3">
                     <div className="flex items-center gap-2">
                       <Mail className="h-4 w-4" />
-                      <span>{currentUser.email}</span>
+                      <span>admin@xzensports.com</span>
                     </div>
                     <span>•</span>
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4" />
-                      <span>Joined {new Date(currentUser.created_at).toLocaleDateString()}</span>
+                      <span>Admin User</span>
                     </div>
                   </div>
                 </div>
@@ -109,13 +118,13 @@ export default async function UsersPage() {
             <CardHeader>
               <CardTitle className="text-white">About User Management</CardTitle>
               <CardDescription className="text-zinc-400">
-                Add new admin users to give them access to the blog management system
+                User management is currently using hardcoded authentication
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-zinc-400">
-                New users will receive an email to confirm their account and set their password. They will then be able
-                to log in and manage blog posts.
+                To enable full user management with Supabase, you'll need to configure email authentication in your
+                Supabase project settings.
               </p>
             </CardContent>
           </Card>
