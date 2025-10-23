@@ -6,12 +6,18 @@ export async function updateSession(request: NextRequest) {
     request,
   })
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY
+  console.log("[v0] Middleware: Environment check", {
+    hasNextPublicUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+    hasSupabaseUrl: !!process.env.SUPABASE_URL,
+    hasNextPublicKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    hasSupabaseKey: !!process.env.SUPABASE_ANON_KEY,
+  })
 
-  // Skip Supabase auth if credentials are not available
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.log("[v0] Middleware: Supabase credentials not available, skipping auth")
+    console.log("[v0] Middleware: Supabase credentials missing - URL:", !!supabaseUrl, "Key:", !!supabaseAnonKey)
     return supabaseResponse
   }
 
@@ -36,6 +42,9 @@ export async function updateSession(request: NextRequest) {
 
   console.log("[v0] Middleware: Checking auth for path:", request.nextUrl.pathname)
   console.log("[v0] Middleware: User authenticated:", !!user)
+  if (user) {
+    console.log("[v0] Middleware: User email:", user.email)
+  }
 
   // Protect admin routes
   if (request.nextUrl.pathname.startsWith("/admin") && !user) {
