@@ -57,15 +57,12 @@ export default function SignUpPage() {
       if (data.user) {
         console.log("[v0] Sign up successful:", data.user.email)
 
-        // Check if email confirmation is required
-        if (data.user.identities && data.user.identities.length === 0) {
-          setSuccess(true)
-          setError("Please check your email to confirm your account before logging in.")
-        } else {
-          // Auto-login after signup
-          router.refresh()
-          router.push("/admin")
-        }
+        setSuccess(true)
+        setError("Account created! You can now log in with your credentials.")
+
+        setTimeout(() => {
+          router.push("/auth/login")
+        }, 2000)
       }
     } catch (err) {
       console.error("[v0] Sign up exception:", err)
@@ -85,9 +82,7 @@ export default function SignUpPage() {
 
         {success ? (
           <div className="space-y-4 text-center">
-            <div className="rounded-lg bg-green-500/10 p-4 text-green-500">
-              Account created successfully! Please check your email to confirm your account.
-            </div>
+            <div className="rounded-lg bg-green-500/10 p-4 text-green-500">{error}</div>
             <Link href="/auth/login">
               <Button className="w-full bg-red-600 hover:bg-red-700">Go to Login</Button>
             </Link>

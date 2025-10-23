@@ -31,22 +31,32 @@ export default function LoginPage() {
       })
 
       if (error) {
+        console.error("[v0] Login error:", error.message)
         if (error.message === "Invalid login credentials") {
-          setError(
-            "Invalid email or password. Please check your credentials and try again. If you haven't created an account yet, please create one in the Supabase dashboard.",
-          )
+          setError("Invalid email or password. Please check your credentials and try again.")
+        } else if (error.message.includes("Email not confirmed")) {
+          setError("Please confirm your email address before logging in. Check your inbox for the confirmation link.")
         } else {
           setError(error.message)
         }
         return
       }
 
-      // Refresh the router to update server components with new session
-      router.refresh()
+      if (data.session) {
+        console.log("[v0] Login successful, session created")
 
-      // Navigate to admin
-      router.push("/admin")
+        await new Promise((resolve) => setTimeout(resolve, 500))
+
+        // Refresh the router to update server components with new session
+        router.refresh()
+
+        await new Promise((resolve) => setTimeout(resolve, 500))
+
+        // Navigate to admin
+        router.push("/admin")
+      }
     } catch (error: unknown) {
+      console.error("[v0] Login exception:", error)
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
       setIsLoading(false)
