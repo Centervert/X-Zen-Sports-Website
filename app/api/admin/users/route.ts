@@ -1,11 +1,10 @@
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { NextResponse } from "next/server"
 
 export async function GET() {
   try {
     const supabase = await createClient()
-
-    // Get the current user to verify they're authenticated
     const {
       data: { user },
       error: userError,
@@ -15,8 +14,8 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Use the admin client to list users
-    const { data, error } = await supabase.auth.admin.listUsers()
+    const adminClient = createAdminClient()
+    const { data, error } = await adminClient.auth.admin.listUsers()
 
     if (error) {
       console.error("[v0] Error fetching users:", error)
@@ -26,6 +25,9 @@ export async function GET() {
     return NextResponse.json({ users: data.users })
   } catch (error) {
     console.error("[v0] Error in users API:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Internal server error" },
+      { status: 500 },
+    )
   }
 }
