@@ -123,7 +123,7 @@ export default function AdminDashboard() {
 
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold">Recent Posts</h3>
-              <Link href="/admin/posts/new">
+              <Link href="/admin/posts/create">
                 <Button className="bg-red-600 hover:bg-red-700 text-white">
                   <Plus className="mr-2 h-4 w-4" />
                   New Post
@@ -168,7 +168,7 @@ export default function AdminDashboard() {
                     <FileText className="h-12 w-12 text-zinc-600 mx-auto mb-4" />
                     <h4 className="text-lg font-semibold text-white mb-2">No posts yet</h4>
                     <p className="text-zinc-400 mb-4">Get started by creating your first blog post</p>
-                    <Link href="/admin/posts/new">
+                    <Link href="/admin/posts/create">
                       <Button className="bg-red-600 hover:bg-red-700 text-white">
                         <Plus className="mr-2 h-4 w-4" />
                         Create Post

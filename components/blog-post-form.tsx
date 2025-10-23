@@ -156,6 +156,7 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
               <div className="space-y-2">
                 <Label htmlFor="slug" className="text-white">
                   Slug
+                  {!post && <span className="ml-2 text-xs text-zinc-500 font-normal">(auto-generated from title)</span>}
                 </Label>
                 <Input
                   id="slug"
@@ -165,6 +166,9 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
                   required
                   className="bg-zinc-900 border-zinc-800 text-white"
                 />
+                <p className="text-xs text-zinc-500">
+                  {post ? "Edit the URL slug for this post" : "Automatically generated from title, but you can edit it"}
+                </p>
               </div>
 
               <div className="space-y-2">
