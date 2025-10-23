@@ -212,13 +212,25 @@ export function BlogPostForm({ post }: BlogPostFormProps) {
                     <SelectTrigger className="bg-zinc-900 border-zinc-800 text-white">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-zinc-900 border-zinc-800">
-                      <SelectItem value="Training Tips">Training Tips</SelectItem>
-                      <SelectItem value="BJJ">BJJ</SelectItem>
-                      <SelectItem value="Muay Thai">Muay Thai</SelectItem>
-                      <SelectItem value="Recovery">Recovery</SelectItem>
-                      <SelectItem value="Youth">Youth</SelectItem>
-                      <SelectItem value="Nutrition">Nutrition</SelectItem>
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                      <SelectItem value="Training Tips" className="text-white hover:bg-zinc-800 focus:bg-zinc-800">
+                        Training Tips
+                      </SelectItem>
+                      <SelectItem value="BJJ" className="text-white hover:bg-zinc-800 focus:bg-zinc-800">
+                        BJJ
+                      </SelectItem>
+                      <SelectItem value="Muay Thai" className="text-white hover:bg-zinc-800 focus:bg-zinc-800">
+                        Muay Thai
+                      </SelectItem>
+                      <SelectItem value="Recovery" className="text-white hover:bg-zinc-800 focus:bg-zinc-800">
+                        Recovery
+                      </SelectItem>
+                      <SelectItem value="Youth" className="text-white hover:bg-zinc-800 focus:bg-zinc-800">
+                        Youth
+                      </SelectItem>
+                      <SelectItem value="Nutrition" className="text-white hover:bg-zinc-800 focus:bg-zinc-800">
+                        Nutrition
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
