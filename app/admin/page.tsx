@@ -14,13 +14,7 @@ export default async function AdminDashboard() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  console.log("[v0] Admin page: User check result", {
-    hasUser: !!user,
-    userEmail: user?.email,
-  })
-
   if (!user) {
-    console.log("[v0] Admin page: No user found, redirecting to login")
     redirect("/auth/login")
   }
 

@@ -20,45 +20,32 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const supabase = createClient()
+
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
-      if (error) {
-        console.error("[v0] Login error:", error.message)
-        if (error.message === "Invalid login credentials") {
-          setError("Invalid email or password. Please check your credentials and try again.")
-        } else if (error.message.includes("Email not confirmed")) {
-          setError("Please confirm your email address before logging in. Check your inbox for the confirmation link.")
-        } else {
-          setError(error.message)
-        }
+      if (signInError) {
+        console.error("[v0] Login error:", signInError.message)
+        setError(signInError.message)
+        setIsLoading(false)
         return
       }
 
       if (data.session) {
-        console.log("[v0] Login successful, session created")
+        console.log("[v0] Login successful, redirecting to admin")
 
-        await new Promise((resolve) => setTimeout(resolve, 500))
-
-        // Refresh the router to update server components with new session
-        router.refresh()
-
-        await new Promise((resolve) => setTimeout(resolve, 500))
-
-        // Navigate to admin
-        router.push("/admin")
+        window.location.href = "/admin"
       }
     } catch (error: unknown) {
       console.error("[v0] Login exception:", error)
       setError(error instanceof Error ? error.message : "An error occurred")
-    } finally {
       setIsLoading(false)
     }
   }
