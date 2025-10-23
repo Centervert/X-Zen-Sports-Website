@@ -24,16 +24,28 @@ export default function LoginPage() {
     setIsLoading(true)
     setError(null)
 
+    console.log("[v0] Attempting login with email:", email)
+
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
-      if (error) throw error
+
+      console.log("[v0] Login response:", { data, error })
+
+      if (error) {
+        console.error("[v0] Login error:", error)
+        throw error
+      }
+
+      console.log("[v0] Login successful, redirecting to admin")
       router.push("/admin")
       router.refresh()
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred")
+      console.error("[v0] Caught error:", error)
+      const errorMessage = error instanceof Error ? error.message : "An error occurred"
+      setError(errorMessage)
     } finally {
       setIsLoading(false)
     }

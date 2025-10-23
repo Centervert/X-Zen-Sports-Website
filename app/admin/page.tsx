@@ -61,6 +61,19 @@ export default async function AdminDashboard() {
           <p className="text-zinc-400">Manage your blog posts and content</p>
         </div>
 
+        <div className="flex gap-4 mb-8 border-b border-zinc-800">
+          <Link href="/admin">
+            <Button variant="ghost" className="text-white border-b-2 border-red-600 rounded-none">
+              Posts
+            </Button>
+          </Link>
+          <Link href="/admin/users">
+            <Button variant="ghost" className="text-zinc-400 hover:text-white rounded-none">
+              Users
+            </Button>
+          </Link>
+        </div>
+
         <div className="grid gap-6 md:grid-cols-3 mb-8">
           <Card className="border-zinc-800 bg-zinc-950">
             <CardHeader>
