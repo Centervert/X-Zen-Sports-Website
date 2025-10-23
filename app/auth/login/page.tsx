@@ -2,51 +2,40 @@
 
 import type React from "react"
 
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { login } from "./actions"
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
-    console.log("[v0] Attempting login with email:", email)
+    const formData = new FormData(e.currentTarget)
+
+    console.log("[v0] Client: Submitting login form")
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+      const result = await login(formData)
 
-      console.log("[v0] Login response:", { data, error })
-
-      if (error) {
-        console.error("[v0] Login error:", error)
-        throw error
+      if (result?.error) {
+        console.error("[v0] Client: Login failed:", result.error)
+        setError(result.error)
+        setIsLoading(false)
       }
-
-      console.log("[v0] Login successful, redirecting to admin")
-      router.push("/admin")
-      router.refresh()
+      // If successful, the server action will redirect
     } catch (error: unknown) {
-      console.error("[v0] Caught error:", error)
+      console.error("[v0] Client: Caught error:", error)
       const errorMessage = error instanceof Error ? error.message : "An error occurred"
       setError(errorMessage)
-    } finally {
       setIsLoading(false)
     }
   }
@@ -70,11 +59,10 @@ export default function LoginPage() {
                   </Label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
                     placeholder="admin@xzensports.com"
                     required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
                     className="bg-zinc-900 border-zinc-800 text-white"
                   />
                 </div>
@@ -84,10 +72,9 @@ export default function LoginPage() {
                   </Label>
                   <Input
                     id="password"
+                    name="password"
                     type="password"
                     required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
                     className="bg-zinc-900 border-zinc-800 text-white"
                   />
                 </div>

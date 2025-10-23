@@ -11,6 +11,7 @@ export async function updateSession(request: NextRequest) {
 
   // Skip Supabase auth if credentials are not available
   if (!supabaseUrl || !supabaseAnonKey) {
+    console.log("[v0] Middleware: Supabase credentials not available, skipping auth")
     return supabaseResponse
   }
 
@@ -33,10 +34,21 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  console.log("[v0] Middleware: Checking auth for path:", request.nextUrl.pathname)
+  console.log("[v0] Middleware: User authenticated:", !!user)
+
   // Protect admin routes
   if (request.nextUrl.pathname.startsWith("/admin") && !user) {
+    console.log("[v0] Middleware: Redirecting to login - no user found")
     const url = request.nextUrl.clone()
     url.pathname = "/auth/login"
+    return NextResponse.redirect(url)
+  }
+
+  if (request.nextUrl.pathname === "/auth/login" && user) {
+    console.log("[v0] Middleware: User already logged in, redirecting to admin")
+    const url = request.nextUrl.clone()
+    url.pathname = "/admin"
     return NextResponse.redirect(url)
   }
 
