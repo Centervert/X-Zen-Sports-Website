@@ -6,15 +6,25 @@ import Link from "next/link"
 import { LogOut, Plus, FileText } from "lucide-react"
 
 export default async function AdminDashboard() {
+  console.log("[v0] Admin page: Checking authentication")
+
   const supabase = await createClient()
 
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
+  console.log("[v0] Admin page: User check result", {
+    hasUser: !!user,
+    userEmail: user?.email,
+  })
+
   if (!user) {
+    console.log("[v0] Admin page: No user found, redirecting to login")
     redirect("/auth/login")
   }
+
+  console.log("[v0] Admin page: User authenticated, loading dashboard")
 
   // Get blog post stats
   const { data: posts, count: totalPosts } = await supabase
