@@ -30,20 +30,23 @@ export default function LoginPage() {
       })
 
       if (signInError) {
-        setError(signInError.message)
+        if (signInError.message === "Invalid login credentials") {
+          setError("Invalid email or password. Please check your credentials and try again.")
+        } else if (signInError.message.includes("Email not confirmed")) {
+          setError("Please confirm your email address before logging in.")
+        } else {
+          setError(signInError.message)
+        }
         setIsLoading(false)
         return
       }
 
       if (data.user) {
-        localStorage.setItem("admin_authenticated", "true")
-        localStorage.setItem("admin_user", JSON.stringify(data.user))
-
-        // Force a full page reload to ensure session is properly set
-        window.location.href = "/admin"
+        router.push("/admin")
+        router.refresh()
       }
     } catch (err) {
-      setError("An unexpected error occurred")
+      setError("An unexpected error occurred. Please try again.")
       setIsLoading(false)
     }
   }

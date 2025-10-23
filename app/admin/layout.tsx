@@ -12,22 +12,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     const checkAuth = async () => {
-      const localAuth = localStorage.getItem("admin_authenticated")
-
-      if (!localAuth) {
-        router.push("/auth/login")
-        return
-      }
-
-      // Verify Supabase session is still valid
       const {
         data: { session },
       } = await supabase.auth.getSession()
 
       if (!session) {
-        // Session expired, clear localStorage and redirect
-        localStorage.removeItem("admin_authenticated")
-        localStorage.removeItem("admin_user")
         router.push("/auth/login")
         return
       }
