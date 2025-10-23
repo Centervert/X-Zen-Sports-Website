@@ -5,28 +5,42 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft, Calendar, Clock, User } from "lucide-react"
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
+export async function generateMetadata({ params }: { params: { slug: string } }) {
   const supabase = await createClient()
-  const { data: post } = await supabase.from("blog_posts").select("*").eq("id", params.id).single()
+  const { data: post } = await supabase
+    .from("blog_posts")
+    .select("*")
+    .or(`slug.eq.${params.slug},id.eq.${params.slug}`)
+    .single()
 
   if (!post) {
     return {
-      title: "Post Not Found",
+      title: "Post Not Found | X-Zen Sports",
+      description: "The blog post you're looking for could not be found.",
     }
   }
 
   return {
     title: `${post.title} | X-Zen Sports Blog`,
     description: post.excerpt,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      images: post.image_url ? [post.image_url] : [],
+      type: "article",
+      publishedTime: post.created_at,
+      authors: [post.author_name],
+    },
   }
 }
 
-export default async function BlogPostPage({ params }: { params: { id: string } }) {
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   const supabase = await createClient()
+
   const { data: post } = await supabase
     .from("blog_posts")
     .select("*")
-    .eq("id", params.id)
+    .or(`slug.eq.${params.slug},id.eq.${params.slug}`)
     .eq("published", true)
     .single()
 
@@ -77,14 +91,26 @@ export default async function BlogPostPage({ params }: { params: { id: string } 
           </div>
 
           {post.image_url && (
-            <div className="relative h-96 rounded-lg overflow-hidden mb-12">
-              <Image src={post.image_url || "/placeholder.svg"} alt={post.title} fill className="object-cover" />
+            <div className="relative h-96 rounded-lg overflow-hidden mb-12 bg-zinc-900">
+              <Image
+                src={post.image_url || "/placeholder.svg"}
+                alt={post.title}
+                fill
+                className="object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none"
+                }}
+              />
             </div>
           )}
 
           <div className="prose prose-invert prose-lg max-w-none">
-            <div className="text-xl text-gray-300 mb-8 leading-relaxed">{post.excerpt}</div>
-            <div className="whitespace-pre-wrap leading-relaxed">{post.content}</div>
+            {post.excerpt && (
+              <div className="text-xl text-gray-300 mb-8 leading-relaxed font-medium border-l-4 border-primary pl-6">
+                {post.excerpt}
+              </div>
+            )}
+            <div className="whitespace-pre-wrap leading-relaxed text-gray-300">{post.content}</div>
           </div>
 
           <div className="mt-16 pt-8 border-t border-white/10">

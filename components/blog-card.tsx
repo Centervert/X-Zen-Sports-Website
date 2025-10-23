@@ -20,12 +20,15 @@ export function BlogCard({ post }: BlogCardProps) {
   return (
     <article className="group bg-white/5 border border-white/10 rounded-lg overflow-hidden hover:border-primary/50 transition-all duration-300">
       <Link href={`/blog/${post.id}`} className="block">
-        <div className="relative h-48 overflow-hidden">
+        <div className="relative h-48 overflow-hidden bg-zinc-900">
           <Image
             src={post.image || "/placeholder.svg"}
             alt={post.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={(e) => {
+              e.currentTarget.src = "/martial-arts-training-gym-with-red-equipment.jpg"
+            }}
           />
           <div className="absolute top-4 left-4">
             <span className="inline-block bg-primary text-white px-4 py-1 rounded-full text-sm font-semibold">
