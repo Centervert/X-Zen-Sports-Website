@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/navigation"
 import { BlogCard } from "@/components/blog-card"
+import { createClient } from "@/lib/supabase/server"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -8,77 +9,16 @@ export const metadata: Metadata = {
     "Expert martial arts and fitness advice from our coaches. Weekly training tips, techniques, and insights on BJJ, Muay Thai, Boxing, Wrestling, and MMA.",
 }
 
-const blogPosts = [
-  {
-    id: 1,
-    title: "5 Essential BJJ Techniques Every Beginner Should Master",
-    excerpt:
-      "Starting your Brazilian Jiu-Jitsu journey? These fundamental techniques will build a solid foundation for your grappling game.",
-    category: "BJJ",
-    author: "Coach David Close",
-    date: "October 15, 2025",
-    readTime: "5 min read",
-    image: "/bjj-training-mat.png",
-  },
-  {
-    id: 2,
-    title: "Building Power in Your Muay Thai Kicks",
-    excerpt:
-      "Learn the biomechanics and training methods to develop devastating kicks that will elevate your striking game.",
-    category: "Muay Thai",
-    author: "Coach Cody Freeland",
-    date: "October 12, 2025",
-    readTime: "6 min read",
-    image: "/muay-thai-kickboxing-training.jpg",
-  },
-  {
-    id: 3,
-    title: "The Mental Game: Preparing for Your First Competition",
-    excerpt:
-      "Competition nerves are normal. Discover strategies to manage anxiety and perform at your best when it matters most.",
-    category: "MMA",
-    author: "Coach Mark Klemm",
-    date: "October 8, 2025",
-    readTime: "7 min read",
-    image: "/martial-arts-training-gym-with-red-equipment.jpg",
-  },
-  {
-    id: 4,
-    title: "Strength Training for Combat Sports Athletes",
-    excerpt:
-      "Not all strength training is created equal. Learn how to build functional strength that translates to the mat and ring.",
-    category: "Fitness",
-    author: "Coach Chris Johnstone",
-    date: "October 5, 2025",
-    readTime: "8 min read",
-    image: "/martial-arts-training-gym-with-red-equipment.jpg",
-  },
-  {
-    id: 5,
-    title: "Wrestling Fundamentals: Takedowns That Work",
-    excerpt: "Master the essential takedowns that form the backbone of effective wrestling and MMA ground control.",
-    category: "Wrestling",
-    author: "Coach Jason Tolbert",
-    date: "October 1, 2025",
-    readTime: "6 min read",
-    image: "/bjj-training-mat.png",
-  },
-  {
-    id: 6,
-    title: "Recovery and Injury Prevention for Martial Artists",
-    excerpt:
-      "Train smarter, not just harder. Essential recovery techniques to keep you healthy and performing at your peak.",
-    category: "Fitness",
-    author: "Coach David Close",
-    date: "September 28, 2025",
-    readTime: "5 min read",
-    image: "/muay-thai-kickboxing-training.jpg",
-  },
-]
+const categories = ["All", "Training Tips", "BJJ", "Muay Thai", "Recovery", "Youth", "Nutrition"]
 
-const categories = ["All", "BJJ", "Muay Thai", "Boxing", "Wrestling", "MMA", "Fitness"]
+export default async function BlogPage() {
+  const supabase = await createClient()
+  const { data: blogPosts } = await supabase
+    .from("blog_posts")
+    .select("*")
+    .eq("published", true)
+    .order("created_at", { ascending: false })
 
-export default function BlogPage() {
   return (
     <main className="min-h-screen bg-black text-white">
       <Navigation />
@@ -109,9 +49,31 @@ export default function BlogPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogPosts.map((post) => (
-              <BlogCard key={post.id} post={post} />
-            ))}
+            {blogPosts && blogPosts.length > 0 ? (
+              blogPosts.map((post) => (
+                <BlogCard
+                  key={post.id}
+                  post={{
+                    id: post.id,
+                    title: post.title,
+                    excerpt: post.excerpt || "",
+                    category: post.category,
+                    author: post.author_name,
+                    date: new Date(post.created_at).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    }),
+                    readTime: `${post.read_time} min read`,
+                    image: post.image_url || "/martial-arts-training-gym-with-red-equipment.jpg",
+                  }}
+                />
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <p className="text-xl text-gray-400">No blog posts available yet. Check back soon!</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

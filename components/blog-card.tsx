@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 
 interface BlogPost {
-  id: number
+  id: string | number
   title: string
   excerpt: string
   category: string
