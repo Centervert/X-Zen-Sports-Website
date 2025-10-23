@@ -333,7 +333,7 @@ export function ClassesSection() {
                       {Object.entries(classItem.schedule).map(([day, times]) => (
                         <div key={day} className="space-y-1">
                           <div className="text-xs font-semibold text-primary uppercase tracking-wide">{day}</div>
-                          {times.map((time, idx) => (
+                          {times.map((time: string, idx: number) => (
                             <div
                               key={idx}
                               className="text-xs text-muted-foreground font-mono pl-2 border-l-2 border-muted/20"

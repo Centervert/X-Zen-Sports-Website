@@ -88,24 +88,22 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
         throw new Error("Failed to submit form")
       }
 
-      console.log("Consultation request submitted:", webhookData)
+      setShowSuccess(true)
+      setTimeout(() => {
+        setShowSuccess(false)
+        setFormData({
+          firstName: "",
+          lastName: "",
+          phone: "",
+          email: "",
+          fitnessGoals: "",
+          contactMethod: "",
+        })
+        onClose()
+      }, 3000)
     } catch (error) {
-      console.error("Error submitting to webhook:", error)
+      // Handle error silently
     }
-
-    setShowSuccess(true)
-    setTimeout(() => {
-      setShowSuccess(false)
-      setFormData({
-        firstName: "",
-        lastName: "",
-        phone: "",
-        email: "",
-        fitnessGoals: "",
-        contactMethod: "",
-      })
-      onClose()
-    }, 3000)
   }
 
   const fitnessGoalOptions = [

@@ -110,13 +110,11 @@ export function JoinFormSection() {
         throw new Error("Failed to submit form")
       }
 
-      console.log("Tour request submitted:", webhookData)
+      // Show pricing modal after submission
+      setShowPricingModal(true)
     } catch (error) {
-      console.error("Error submitting to webhook:", error)
+      // Handle error silently or show user-friendly message
     }
-
-    // Show pricing modal after submission
-    setShowPricingModal(true)
   }
 
   const closePricingModal = () => {

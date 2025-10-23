@@ -55,7 +55,7 @@ export function FreeClassModal({ isOpen, onClose }: FreeClassModalProps) {
         })
       }
     } catch (error) {
-      console.error("Error submitting form:", error)
+      // Handle error silently
     } finally {
       setIsSubmitting(false)
     }

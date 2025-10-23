@@ -1,6 +1,7 @@
 "use client"
 
 import { useScrollAnimation } from "@/hooks/use-scroll-animation"
+import Image from "next/image"
 
 const coaches = [
   {
@@ -83,10 +84,12 @@ export function CoachesSection() {
             >
               {/* Coach Photo */}
               <div className="relative aspect-square overflow-hidden bg-gray-900 mb-4">
-                <img
+                <Image
                   src={coach.image || "/placeholder.svg"}
                   alt={coach.name}
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
+                  fill
+                  className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-all duration-500" />
               </div>

@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import { GoogleTagManager, GoogleAnalytics } from "@next/third-parties/google"
 import Script from "next/script"
+import { ErrorBoundary } from "@/components/error-boundary"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -36,7 +37,9 @@ export default function RootLayout({
           }}
         />
         <Script src="https://www.googletagmanager.com/gtag/js?id=AW-17600256104" strategy="afterInteractive" />
-        <Suspense fallback={null}>{children}</Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={null}>{children}</Suspense>
+        </ErrorBoundary>
         <Analytics />
         <GoogleTagManager gtmId="GTM-TL2CDM5R" />
         <GoogleAnalytics gaId="G-F6X35BE0Z6" />

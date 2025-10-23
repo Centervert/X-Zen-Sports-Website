@@ -1,22 +1,15 @@
+const GHL_CONFIG = {
+  apiKey:
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbl9pZCI6InlxOVFLTEtRdGw3bVpMUVVaeXNYIiwidmVyc2lvbiI6MSwiaWF0IjoxNzM0NzQ5NTU5NzU5LCJzdWIiOiJvRGRGRGxGRGxGRGxGRGxGRGxGRGxGIn0.example", // Your actual API key
+  locationId: "yq9QKLKQtl7mZLQUZysX",
+}
+
 export async function GET() {
   try {
-    const apiKey = process.env.GHL_API_KEY
-    const locationId = process.env.GHL_LOCATION_ID
-
-    if (!apiKey || !locationId) {
-      return Response.json(
-        {
-          error: "Missing GoHighLevel credentials",
-          message: "Please ensure GHL_API_KEY and GHL_LOCATION_ID are set in environment variables",
-        },
-        { status: 400 },
-      )
-    }
-
     const endpoints = [
-      `https://services.leadconnectorhq.com/opportunities/pipelines?locationId=${locationId}`,
-      `https://rest.gohighlevel.com/v1/opportunities/pipelines?locationId=${locationId}`,
-      `https://rest.gohighlevel.com/v1/pipelines?locationId=${locationId}`,
+      `https://services.leadconnectorhq.com/opportunities/pipelines?locationId=${GHL_CONFIG.locationId}`,
+      `https://rest.gohighlevel.com/v1/opportunities/pipelines?locationId=${GHL_CONFIG.locationId}`,
+      `https://rest.gohighlevel.com/v1/pipelines?locationId=${GHL_CONFIG.locationId}`,
     ]
 
     let lastError = null
@@ -28,9 +21,9 @@ export async function GET() {
         const response = await fetch(endpoint, {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${apiKey}`,
+            Authorization: `Bearer ${GHL_CONFIG.apiKey}`,
             "Content-Type": "application/json",
-            Version: "2021-07-28", // Add API version header
+            Version: "2021-07-28",
           },
         })
 
@@ -53,7 +46,7 @@ export async function GET() {
 
           return Response.json({
             success: true,
-            locationId,
+            locationId: GHL_CONFIG.locationId,
             endpointUsed: endpoint,
             pipelines: formattedPipelines,
             rawData: data,
@@ -83,8 +76,8 @@ export async function GET() {
         message: "All API endpoints returned errors. Please verify your API key and location ID.",
         attempts: lastError,
         troubleshooting: {
-          step1: "Verify GHL_API_KEY is correct in environment variables",
-          step2: "Verify GHL_LOCATION_ID is correct",
+          step1: "Update GHL_CONFIG.apiKey in app/api/ghl-pipelines/route.ts",
+          step2: "Verify GHL_CONFIG.locationId is correct",
           step3: "Check that the API key has permissions to read opportunities/pipelines",
           step4: "Ensure the API key is not expired",
         },

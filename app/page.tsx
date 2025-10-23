@@ -1,6 +1,6 @@
 import { Navigation } from "@/components/navigation"
 import { HeroSection } from "@/components/hero-section"
-import { ClassesSection } from "@/components/classes-section"
+import { LazyClassesSection } from "@/components/lazy-components"
 import { JoinFormSection } from "@/components/join-form-section"
 import { CtaSection } from "@/components/cta-section"
 
@@ -9,7 +9,7 @@ export default function HomePage() {
     <main className="min-h-screen">
       <Navigation />
       <HeroSection />
-      <ClassesSection />
+      <LazyClassesSection />
       <JoinFormSection />
       <CtaSection />
     </main>
