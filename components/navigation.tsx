@@ -19,17 +19,15 @@ export function Navigation() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/coaching", label: "Coaches" },
-    { href: "/contact", label: "Contact" },
-    { href: "/blog", label: "Blog" },
-  ]
-
   const scrollToClasses = () => {
-    const classesSection = document.querySelector(".classes-section")
-    if (classesSection) {
-      classesSection.scrollIntoView({ behavior: "smooth", block: "start" })
+    const currentPath = window.location.pathname
+    if (currentPath !== "/") {
+      window.location.href = "/#classes"
+    } else {
+      const classesSection = document.querySelector(".classes-section")
+      if (classesSection) {
+        classesSection.scrollIntoView({ behavior: "smooth", block: "start" })
+      }
     }
     setIsOpen(false)
     setIsProgramsOpen(false)
@@ -196,3 +194,10 @@ export function Navigation() {
     </nav>
   )
 }
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/coaching", label: "Coaches" },
+  { href: "/contact", label: "Contact" },
+  { href: "/blog", label: "Blog" },
+]

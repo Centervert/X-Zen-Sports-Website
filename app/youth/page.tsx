@@ -56,7 +56,7 @@ export default function YouthPage() {
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <Badge className="bg-primary/20 text-primary border-primary/30 mb-6 text-lg px-6 py-2">
-                Ages 3 to 16     
+                Ages 3 to 16
               </Badge>
               <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-white to-accent bg-clip-text text-transparent">
                 X-ZEN KIDS ZONE

@@ -95,7 +95,7 @@ export function FreeClassModal({ isOpen, onClose }: FreeClassModalProps) {
           <form onSubmit={handleSubmit} className="space-y-6 mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="firstName" className="text-white">
+                <Label htmlFor="firstName" className="text-white mb-2 block">
                   First Name *
                 </Label>
                 <Input
@@ -107,7 +107,7 @@ export function FreeClassModal({ isOpen, onClose }: FreeClassModalProps) {
                 />
               </div>
               <div>
-                <Label htmlFor="lastName" className="text-white">
+                <Label htmlFor="lastName" className="text-white mb-2 block">
                   Last Name *
                 </Label>
                 <Input
@@ -121,7 +121,7 @@ export function FreeClassModal({ isOpen, onClose }: FreeClassModalProps) {
             </div>
 
             <div>
-              <Label htmlFor="email" className="text-white">
+              <Label htmlFor="email" className="text-white mb-2 block">
                 Email Address *
               </Label>
               <Input
@@ -135,7 +135,7 @@ export function FreeClassModal({ isOpen, onClose }: FreeClassModalProps) {
             </div>
 
             <div>
-              <Label htmlFor="phone" className="text-white">
+              <Label htmlFor="phone" className="text-white mb-2 block">
                 Phone Number *
               </Label>
               <Input
@@ -149,7 +149,7 @@ export function FreeClassModal({ isOpen, onClose }: FreeClassModalProps) {
             </div>
 
             <div>
-              <Label htmlFor="classInterest" className="text-white">
+              <Label htmlFor="classInterest" className="text-white mb-2 block">
                 What class are you interested in? *
               </Label>
               <Select
@@ -173,7 +173,7 @@ export function FreeClassModal({ isOpen, onClose }: FreeClassModalProps) {
             </div>
 
             <div>
-              <Label htmlFor="preferredTime" className="text-white">
+              <Label htmlFor="preferredTime" className="text-white mb-2 block">
                 Preferred Workout Time *
               </Label>
               <Select
@@ -193,7 +193,7 @@ export function FreeClassModal({ isOpen, onClose }: FreeClassModalProps) {
             </div>
 
             <div>
-              <Label htmlFor="goal" className="text-white">
+              <Label htmlFor="goal" className="text-white mb-2 block">
                 What is your ultimate goal? *
               </Label>
               <Textarea

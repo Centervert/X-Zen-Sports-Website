@@ -98,7 +98,7 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <div className="mb-12">
+            <div className="mb-12 mt-16">
               <h3 className="text-3xl font-bold mb-4">Message Us</h3>
               <p className="text-gray-300 mb-6">
                 If you've got a question, a comment, or just want to talk more about your fitness goals, leave us a
@@ -107,7 +107,7 @@ export default function ContactPage() {
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <Label htmlFor="location" className="text-white">
+                  <Label htmlFor="location" className="text-white mb-2 block">
                     Select Location
                   </Label>
                   <Input
@@ -121,7 +121,7 @@ export default function ContactPage() {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <Label htmlFor="firstName" className="text-white">
+                    <Label htmlFor="firstName" className="text-white mb-2 block">
                       First Name *
                     </Label>
                     <Input
@@ -133,7 +133,7 @@ export default function ContactPage() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="lastName" className="text-white">
+                    <Label htmlFor="lastName" className="text-white mb-2 block">
                       Last Name *
                     </Label>
                     <Input
@@ -147,7 +147,7 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="email" className="text-white">
+                  <Label htmlFor="email" className="text-white mb-2 block">
                     Email *
                   </Label>
                   <Input
@@ -161,7 +161,7 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="phone" className="text-white">
+                  <Label htmlFor="phone" className="text-white mb-2 block">
                     Phone
                   </Label>
                   <Input
@@ -174,7 +174,7 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="comment" className="text-white">
+                  <Label htmlFor="comment" className="text-white mb-2 block">
                     Comment *
                   </Label>
                   <Textarea
@@ -192,7 +192,7 @@ export default function ContactPage() {
                   disabled={isSubmitting}
                   className="w-full bg-primary hover:bg-primary/90 text-white font-bold text-lg py-6"
                 >
-                  {isSubmitting ? "Sending..." : "send message"}
+                  {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
 
                 {submitStatus === "success" && (
@@ -250,8 +250,15 @@ export default function ContactPage() {
               <h3 className="text-2xl font-bold mb-4">Location & Hours</h3>
               <div className="space-y-4">
                 <p className="text-lg">
-                  <span className="font-semibold text-primary">Address:</span> 2435 East North S 1101, Greenville, SC
-                  29615
+                  <span className="font-semibold text-primary">Address:</span>{" "}
+                  <a
+                    href="https://www.google.com/maps/place/2435+E+North+St+Unit+1101,+Greenville,+SC+29615"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-primary transition-colors underline"
+                  >
+                    2435 East North St Unit 1101, Greenville, SC 29615
+                  </a>
                 </p>
                 <div>
                   <p className="font-semibold text-primary mb-2">Hours:</p>

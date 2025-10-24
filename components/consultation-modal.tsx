@@ -150,7 +150,9 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName">First Name *</Label>
+              <Label htmlFor="firstName" className="mb-2 block">
+                First Name *
+              </Label>
               <Input
                 id="firstName"
                 value={formData.firstName}
@@ -160,7 +162,9 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name *</Label>
+              <Label htmlFor="lastName" className="mb-2 block">
+                Last Name *
+              </Label>
               <Input
                 id="lastName"
                 value={formData.lastName}
@@ -172,7 +176,9 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number *</Label>
+            <Label htmlFor="phone" className="mb-2 block">
+              Phone Number *
+            </Label>
             <Input
               id="phone"
               type="tel"
@@ -185,7 +191,9 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email Address *</Label>
+            <Label htmlFor="email" className="mb-2 block">
+              Email Address *
+            </Label>
             <Input
               id="email"
               type="email"
@@ -197,7 +205,9 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="fitnessGoals">Primary Fitness Goals *</Label>
+            <Label htmlFor="fitnessGoals" className="mb-2 block">
+              Primary Fitness Goals *
+            </Label>
             <Select
               value={formData.fitnessGoals}
               onValueChange={(value) => setFormData((prev) => ({ ...prev, fitnessGoals: value }))}
@@ -216,7 +226,7 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
           </div>
 
           <div className="space-y-3">
-            <Label>Preferred Contact Method *</Label>
+            <Label className="mb-2 block">Preferred Contact Method *</Label>
             <RadioGroup
               value={formData.contactMethod}
               onValueChange={(value) => setFormData((prev) => ({ ...prev, contactMethod: value }))}
