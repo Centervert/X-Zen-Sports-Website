@@ -59,6 +59,8 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
     e.preventDefault()
 
     try {
+      console.log("[v0] Consultation Modal: Submitting form data:", formData)
+
       const estTimestamp = new Date().toLocaleString("en-US", {
         timeZone: "America/New_York",
         year: "numeric",
@@ -76,6 +78,8 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
         formType: "Private Coaching Consultation",
       }
 
+      console.log("[v0] Consultation Modal: Sending request to /api/submit-lead")
+
       const response = await fetch("/api/submit-lead", {
         method: "POST",
         headers: {
@@ -84,10 +88,16 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
         body: JSON.stringify(webhookData),
       })
 
+      console.log("[v0] Consultation Modal: Response status:", response.status)
+
       if (!response.ok) {
-        throw new Error("Failed to submit form")
+        const errorData = await response.json()
+        console.error("[v0] Consultation Modal: Error response:", errorData)
+        alert(errorData.error || "Failed to submit form. Please try again.")
+        return
       }
 
+      console.log("[v0] Consultation Modal: Submission successful")
       setShowSuccess(true)
       setTimeout(() => {
         setShowSuccess(false)
@@ -102,7 +112,8 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
         onClose()
       }, 3000)
     } catch (error) {
-      // Handle error silently
+      console.error("[v0] Consultation Modal: Submission error:", error)
+      alert("Unable to submit form. Please try again or call us directly at (864) 778-5203.")
     }
   }
 

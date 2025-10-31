@@ -28,6 +28,8 @@ export function JoinFormSection() {
     smsConsent: false,
   })
   const [showPricingModal, setShowPricingModal] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const normalizeName = (name: string) => {
     return name
@@ -80,7 +82,12 @@ export function JoinFormSection() {
       return
     }
 
+    setIsSubmitting(true)
+    setErrorMessage(null)
+
     try {
+      console.log("[v0] Form: Submitting form data:", formData)
+
       const estTimestamp = new Date().toLocaleString("en-US", {
         timeZone: "America/New_York",
         year: "numeric",
@@ -98,6 +105,8 @@ export function JoinFormSection() {
         formType: "Tour Request",
       }
 
+      console.log("[v0] Form: Sending request to /api/submit-lead")
+
       const response = await fetch("/api/submit-lead", {
         method: "POST",
         headers: {
@@ -106,14 +115,22 @@ export function JoinFormSection() {
         body: JSON.stringify(webhookData),
       })
 
+      console.log("[v0] Form: Response status:", response.status)
+
       if (!response.ok) {
-        throw new Error("Failed to submit form")
+        const errorData = await response.json()
+        console.error("[v0] Form: Error response:", errorData)
+        throw new Error(errorData.error || "Failed to submit form")
       }
 
+      console.log("[v0] Form: Submission successful, showing pricing modal")
       // Show pricing modal after submission
       setShowPricingModal(true)
     } catch (error) {
-      // Handle error silently or show user-friendly message
+      console.error("[v0] Form: Submission error:", error)
+      setErrorMessage(error instanceof Error ? error.message : "Failed to submit form. Please try again.")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -289,13 +306,19 @@ export function JoinFormSection() {
                   </p>
                 </div>
 
+                {errorMessage && (
+                  <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-red-400 text-sm">
+                    {errorMessage}
+                  </div>
+                )}
+
                 <Button
                   type="submit"
-                  disabled={!isFormValid}
+                  disabled={!isFormValid || isSubmitting}
                   className="w-full bg-primary hover:bg-primary/90 text-white px-12 py-4 rounded-full font-semibold tracking-wide transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 h-14 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  See if we are the right fit
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  {isSubmitting ? "Submitting..." : "See if we are the right fit"}
+                  {!isSubmitting && <ArrowRight className="ml-2 h-5 w-5" />}
                 </Button>
 
                 <p className="text-sm text-gray-400 text-center">

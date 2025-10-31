@@ -27,21 +27,50 @@ export function FreeClassModal({ isOpen, onClose }: FreeClassModalProps) {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [error, setError] = useState<string>("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setError("")
 
     try {
+      console.log("[v0] Free Class Modal: Submitting form data:", formData)
+
+      const formattedPhone = formData.phone.replace(/\D/g, "")
+      const phoneFormatted =
+        formattedPhone.length === 10
+          ? `(${formattedPhone.slice(0, 3)}) ${formattedPhone.slice(3, 6)}-${formattedPhone.slice(6)}`
+          : formData.phone
+
+      console.log("[v0] Free Class Modal: Sending request to /api/submit-lead")
+
       const response = await fetch("/api/submit-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
+          phone: phoneFormatted,
           formType: "Free Class Request",
         }),
       })
 
+      console.log("[v0] Free Class Modal: Response status:", response.status)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error("[v0] Free Class Modal: Error response:", errorData)
+        if (errorData.details && Array.isArray(errorData.details)) {
+          const errorMessages = errorData.details.map((err: any) => err.message).join(", ")
+          setError(errorMessages)
+        } else {
+          setError(errorData.error || "Something went wrong. Please try again.")
+        }
+        setIsSubmitting(false)
+        return
+      }
+
+      console.log("[v0] Free Class Modal: Submission successful")
       if (response.ok) {
         setShowSuccess(true)
         setFormData({
@@ -55,7 +84,8 @@ export function FreeClassModal({ isOpen, onClose }: FreeClassModalProps) {
         })
       }
     } catch (error) {
-      // Handle error silently
+      console.error("[v0] Free Class Modal: Submission error:", error)
+      setError("Unable to submit form. Please try again or call us directly.")
     } finally {
       setIsSubmitting(false)
     }
@@ -63,6 +93,7 @@ export function FreeClassModal({ isOpen, onClose }: FreeClassModalProps) {
 
   const handleClose = () => {
     setShowSuccess(false)
+    setError("")
     onClose()
   }
 
@@ -93,6 +124,8 @@ export function FreeClassModal({ isOpen, onClose }: FreeClassModalProps) {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6 mt-6">
+            {error && <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-4 text-red-400">{error}</div>}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="firstName" className="text-white mb-2 block">

@@ -27,6 +27,7 @@ export default function ContactPage() {
     e.preventDefault()
 
     const rateCheck = checkRateLimit()
+
     if (!rateCheck.allowed) {
       setSubmitStatus("rate-limited")
       setRateLimitMessage(`Too many submissions. Please wait ${rateCheck.remainingTime} seconds before trying again.`)
@@ -37,17 +38,37 @@ export default function ContactPage() {
     setSubmitStatus("idle")
 
     try {
+      console.log("[v0] Contact Page: Submitting form data:", formData)
+
+      let formattedPhone = formData.phone
+      if (formData.phone) {
+        const phoneDigits = formData.phone.replace(/\D/g, "")
+        if (phoneDigits.length === 10) {
+          formattedPhone = `(${phoneDigits.slice(0, 3)}) ${phoneDigits.slice(3, 6)}-${phoneDigits.slice(6)}`
+        }
+      }
+
+      const payload = {
+        ...formData,
+        phone: formattedPhone,
+        formType: "contact",
+        timestamp: new Date().toLocaleString("en-US", { timeZone: "America/New_York" }),
+      }
+
+      console.log("[v0] Contact Page: Sending request to /api/submit-lead")
+
       const response = await fetch("/api/submit-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          formType: "contact",
-          timestamp: new Date().toLocaleString("en-US", { timeZone: "America/New_York" }),
-        }),
+        body: JSON.stringify(payload),
       })
 
+      console.log("[v0] Contact Page: Response status:", response.status)
+
+      const responseData = await response.json()
+
       if (response.ok) {
+        console.log("[v0] Contact Page: Submission successful")
         recordSubmission()
         setSubmitStatus("success")
         setFormData({
@@ -59,11 +80,14 @@ export default function ContactPage() {
           comment: "",
         })
       } else {
+        console.error("[v0] Contact Page: Error response:", responseData)
         setSubmitStatus("error")
+        setRateLimitMessage(responseData.error || "There was an error sending your message. Please try again.")
       }
     } catch (error) {
-      console.error("Error submitting form:", error)
+      console.error("[v0] Contact Page: Submission error:", error)
       setSubmitStatus("error")
+      setRateLimitMessage("Unable to submit form. Please try again or call us directly at (864) 778-5203.")
     } finally {
       setIsSubmitting(false)
     }
@@ -199,7 +223,9 @@ export default function ContactPage() {
                   <p className="text-green-500 text-center">Message sent successfully! We'll be in touch soon.</p>
                 )}
                 {submitStatus === "error" && (
-                  <p className="text-red-500 text-center">There was an error sending your message. Please try again.</p>
+                  <p className="text-red-500 text-center">
+                    {rateLimitMessage || "There was an error sending your message. Please try again."}
+                  </p>
                 )}
                 {submitStatus === "rate-limited" && (
                   <p className="text-yellow-500 text-center font-semibold">{rateLimitMessage}</p>

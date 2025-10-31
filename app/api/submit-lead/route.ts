@@ -10,17 +10,19 @@ import {
 } from "@/lib/validation"
 
 const GHL_CONFIG = {
-  apiKey:
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbl9pZCI6InlxOVFLTEtRdGw3bVpMUVVaeXNYIiwidmVyc2lvbiI6MSwiaWF0IjoxNzM0NzQ5NTU5NzU5LCJzdWIiOiJvRGRGRGxGRGxGRGxGRGxGRGxGRGxGIn0.example", // Your actual API key
-  locationId: "yq9QKLKQtl7mZLQUZysX",
-  pipelineId: "XMhsday0hthcPjTcG5In",
-  stageId: "03962edc-b501-4acd-8a96-54292180f1bc",
+  apiKey: process.env.GHL_API_KEY || "",
+  locationId: process.env.GHL_LOCATION_ID || "",
+  pipelineId: process.env.GHL_PIPELINE_ID || "",
+  stageId: process.env.GHL_PIPELINE_STAGE_ID || "",
   baseUrl: "https://services.leadconnectorhq.com",
 }
 
 export async function POST(request: Request) {
+  console.log("[v0] API: Received POST request to /api/submit-lead")
+
   try {
     const body = await request.json()
+    console.log("[v0] API: Request body:", body)
 
     // Determine which schema to use based on formType
     let schema
@@ -30,6 +32,7 @@ export async function POST(request: Request) {
         break
       case "contact":
         schema = contactFormSchema
+        console.log("[v0] API: Using contact form schema")
         break
       case "Free Class Request":
         schema = freeClassSchema
@@ -38,14 +41,20 @@ export async function POST(request: Request) {
         schema = consultationSchema
         break
       default:
+        console.log("[v0] API: Invalid form type:", body.formType)
         return NextResponse.json({ error: "Invalid form type" }, { status: 400 })
     }
 
     // Validate and sanitize input
+    console.log("[v0] API: Validating form data...")
     const validation = validateFormData(body, schema)
+
     if (!validation.success) {
+      console.log("[v0] API: Validation failed:", validation.errors)
       return NextResponse.json({ error: "Validation failed", details: validation.errors }, { status: 400 })
     }
+
+    console.log("[v0] API: Validation successful")
 
     // Sanitize the validated data
     const sanitizedData = {
@@ -56,7 +65,7 @@ export async function POST(request: Request) {
       phone: validation.data.phone,
     }
 
-    // Submit to Zapier webhook (existing integration)
+    console.log("[v0] API: Submitting to Zapier...")
     const zapierResponse = await fetch("https://hooks.zapier.com/hooks/catch/24403206/u93b7oq/", {
       method: "POST",
       headers: {
@@ -66,82 +75,115 @@ export async function POST(request: Request) {
     })
 
     if (!zapierResponse.ok) {
-      // Log error but don't fail the request
+      console.log("[v0] API: Zapier submission failed:", zapierResponse.status)
+    } else {
+      console.log("[v0] API: Zapier submission successful")
     }
 
-    try {
-      // Create contact in GoHighLevel
-      const contactPayload: any = {
-        firstName: sanitizedData.firstName || "",
-        lastName: sanitizedData.lastName || "",
-        email: sanitizedData.email || "",
-        phone: sanitizedData.phone || "",
-        source: sanitizedData.formType || "Website Form",
-        tags: ["Website Lead", sanitizedData.formType || "Tour Request"],
-        locationId: GHL_CONFIG.locationId,
-      }
-
-      if (sanitizedData.smsConsent) {
-        contactPayload.customFields = [{ key: "sms_consent", field_value: "true" }]
-      }
-
-      const contactResponse = await fetch(`${GHL_CONFIG.baseUrl}/contacts/`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${GHL_CONFIG.apiKey}`,
-          "Content-Type": "application/json",
-          Version: "2021-07-28",
-        },
-        body: JSON.stringify(contactPayload),
-      })
-
-      if (!contactResponse.ok) {
-        const errorText = await contactResponse.text()
-        throw new Error(`GHL contact creation failed: ${contactResponse.status}`)
-      }
-
-      const contactData = await contactResponse.json()
-      const contactId = contactData.contact?.id || contactData.id
-
-      if (contactId) {
-        const opportunityPayload = {
-          pipelineId: GHL_CONFIG.pipelineId,
+    if (GHL_CONFIG.apiKey && GHL_CONFIG.locationId) {
+      try {
+        // Create contact in GoHighLevel
+        const contactPayload: any = {
+          firstName: sanitizedData.firstName || "",
+          lastName: sanitizedData.lastName || "",
+          email: sanitizedData.email || "",
+          phone: sanitizedData.phone || "",
+          source: sanitizedData.formType || "Website Form",
+          tags: ["Website Lead", sanitizedData.formType || "Tour Request"],
           locationId: GHL_CONFIG.locationId,
-          name: `${body.firstName} ${body.lastName} - ${body.formType || "Tour Request"}`,
-          contactId: contactId,
-          status: "open",
-          pipelineStageId: GHL_CONFIG.stageId,
-          source: body.formType || "Website Form",
         }
 
-        console.log("[v0] Creating GHL opportunity:", opportunityPayload)
+        const customFields = []
 
-        const opportunityResponse = await fetch(`${GHL_CONFIG.baseUrl}/opportunities/`, {
+        if (sanitizedData.smsConsent) {
+          customFields.push({ key: "sms_consent", field_value: "true" })
+        }
+
+        // Set "Needs Opportunity" custom field to "Yes"
+        customFields.push({
+          id: "XWUPG31bKmlFJZH5nl1P",
+          field_value: "Yes",
+        })
+
+        if (customFields.length > 0) {
+          contactPayload.customFields = customFields
+        }
+
+        console.log("[v0] API: Creating GHL contact...")
+        const contactResponse = await fetch(`${GHL_CONFIG.baseUrl}/contacts/`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${GHL_CONFIG.apiKey}`,
             "Content-Type": "application/json",
             Version: "2021-07-28",
           },
-          body: JSON.stringify(opportunityPayload),
+          body: JSON.stringify(contactPayload),
         })
 
-        if (!opportunityResponse.ok) {
-          const errorText = await opportunityResponse.text()
-          console.error(`GHL opportunity creation failed: ${opportunityResponse.status}`, errorText)
+        let contactId: string | null = null
+
+        if (!contactResponse.ok) {
+          const errorData = await contactResponse.json()
+
+          // Check if this is a duplicate contact error
+          if (
+            contactResponse.status === 400 &&
+            errorData.message?.includes("duplicated contacts") &&
+            errorData.meta?.contactId
+          ) {
+            // Contact already exists - use the existing contactId
+            contactId = errorData.meta.contactId
+            console.log("[v0] API: Contact already exists (expected), using existing contactId:", contactId)
+
+            try {
+              const updateResponse = await fetch(`${GHL_CONFIG.baseUrl}/contacts/${contactId}`, {
+                method: "PUT",
+                headers: {
+                  Authorization: `Bearer ${GHL_CONFIG.apiKey}`,
+                  "Content-Type": "application/json",
+                  Version: "2021-07-28",
+                },
+                body: JSON.stringify({
+                  customFields: [
+                    {
+                      id: "XWUPG31bKmlFJZH5nl1P",
+                      field_value: "Yes",
+                    },
+                  ],
+                }),
+              })
+
+              if (updateResponse.ok) {
+                console.log("[v0] API: Successfully updated 'Needs Opportunity' field for existing contact")
+              } else {
+                console.error("[v0] API: Failed to update custom field for existing contact")
+              }
+            } catch (updateError) {
+              console.error("[v0] API: Error updating custom field:", updateError)
+            }
+          } else {
+            // Different error - log and continue
+            console.error("[v0] API: GHL contact creation failed:", contactResponse.status, errorData)
+            throw new Error(`GHL contact creation failed: ${contactResponse.status}`)
+          }
         } else {
-          const opportunityData = await opportunityResponse.json()
-          console.log("[v0] GHL opportunity created:", opportunityData.opportunity?.id || opportunityData.id)
+          // Contact created successfully
+          const contactData = await contactResponse.json()
+          console.log("[v0] API: GHL contact created successfully with 'Needs Opportunity' field set to Yes")
+          contactId = contactData.contact?.id || contactData.id
         }
+      } catch (ghlError) {
+        console.error("[v0] API: Error submitting to GoHighLevel:", ghlError)
+        // Don't fail the entire request if GHL fails
       }
-    } catch (ghlError) {
-      console.error("Error submitting to GoHighLevel:", ghlError)
-      // Don't fail the entire request if GHL fails
+    } else {
+      console.log("[v0] API: Skipping GHL integration - API key or location ID not configured")
     }
 
+    console.log("[v0] API: Returning success response")
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("Error forwarding to webhook:", error)
+    console.error("[v0] API: Error in submit-lead:", error)
     return NextResponse.json({ success: false, error: "Failed to submit form" }, { status: 500 })
   }
 }
