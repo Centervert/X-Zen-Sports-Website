@@ -5,34 +5,40 @@ import Image from "next/image"
 
 const coaches = [
   {
-    name: "CODY FREELAND",
+    name: "CODY",
     title: "MMA COACH",
     image: "/images/cody-freeland.png",
     specialties: ["Brazilian Jiu-Jitsu", "MMA", "Competition Prep"],
   },
   {
-    name: "DAVID CLOSE",
+    name: "DAVID",
     title: "BJJ & JUDO COACH",
     image: "/images/david-close.png",
     specialties: ["Muay Thai", "Kickboxing", "Conditioning"],
   },
   {
-    name: "MARK KLEMM",
+    name: "MARK",
     title: "MUAY THAI COACH",
-    image: "/images/mark-klemm.png",
+    image: "/images/mark.jpeg",
     specialties: ["Boxing", "Fitness Boxing", "Strength Training"],
   },
   {
-    name: "JASON TOLBERT",
+    name: "JASON",
     title: "WRESTLING COACH",
-    image: "/images/jason-tolbert.jpg",
+    image: "/images/jason.jpeg",
     specialties: ["Military Fitness", "Discipline Training", "Leadership"],
   },
   {
-    name: "LAMAR PARKS",
+    name: "LAMAR",
     title: "BOXING COACH",
     image: "/images/lamar-parks.png",
     specialties: ["Boxing", "Conditioning", "Athletic Performance"],
+  },
+  {
+    name: "ANDREA",
+    title: "FITNESS COACH",
+    image: "/images/andrea.jpeg",
+    specialties: ["Fitness Training", "Conditioning", "Group Classes"],
   },
 ]
 
@@ -62,7 +68,7 @@ export function CoachesSection() {
           <div className="mb-8">
             <div className="text-center">
               <img
-                src="/images/x-zen-metallic-logo.png"
+                src="/images/X-ZenLogo_OnDark_Horizontal_RGB.png"
                 alt="X-ZEN SPORTS"
                 className="mx-auto h-16 md:h-20 w-auto mb-2"
               />
