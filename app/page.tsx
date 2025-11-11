@@ -10,10 +10,10 @@ export default function HomePage() {
     <main className="min-h-screen">
       <Navigation />
       <HeroSection />
+      <CtaSection />
       <LazyClassesSection />
       <JoinFormSection />
       <GoogleReviewsSection />
-      <CtaSection />
     </main>
   )
 }
