@@ -42,11 +42,6 @@ const reviews: Review[] = [
     rating: 5,
   },
   {
-    name: "Bada Boom Fireworks",
-    text: "Great community! Knowledgeable coaches, variety of programs, and a clean, organized facility. I'd recommend this gym to anyone!",
-    rating: 5,
-  },
-  {
     name: "Patrick Hall",
     text: "Amazing gym, good coaches, great class schedule, solid weight room, and friendly people. It's a great community—and worth every bit of the $150/month.",
     rating: 5,
