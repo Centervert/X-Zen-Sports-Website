@@ -75,10 +75,7 @@ export default function CoachingPage() {
                   </a>
                 </p>
                 <p className="text-lg">
-                  <span className="font-semibold text-primary">Email:</span>{" "}
-                  <a href="mailto:connect@xzensports.com" className="hover:text-primary transition-colors">
-                    connect@xzensports.com
-                  </a>
+                  <span className="font-semibold text-primary">Email:</span> connect@xzensports.com
                 </p>
               </div>
             </div>
