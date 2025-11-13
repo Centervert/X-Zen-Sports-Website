@@ -70,8 +70,8 @@ export default function CoachingPage() {
               <div className="space-y-3">
                 <p className="text-lg">
                   <span className="font-semibold text-primary">Phone:</span>{" "}
-                  <a href="tel:+18642143174" className="hover:text-primary transition-colors">
-                    (864) 214-3174
+                  <a href="tel:+18645284024" className="hover:text-primary transition-colors">
+                    (864) 528-4024
                   </a>
                 </p>
                 <p className="text-lg">
