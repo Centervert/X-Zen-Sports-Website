@@ -72,25 +72,25 @@ export function GoogleReviewsSection() {
   const { ref: sectionRef, isVisible } = useScrollAnimation(0.2)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [isPaused, setIsPaused] = useState(false)
+  const scrollPositionRef = useRef(0)
 
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current
     if (!scrollContainer) return
 
     let animationFrameId: number
-    let scrollPosition = 0
     const scrollSpeed = 0.5
 
     const scroll = () => {
       if (!isPaused) {
-        scrollPosition += scrollSpeed
+        scrollPositionRef.current += scrollSpeed
 
         // Reset scroll position when reaching the end of first set of reviews
-        if (scrollPosition >= scrollContainer.scrollWidth / 2) {
-          scrollPosition = 0
+        if (scrollPositionRef.current >= scrollContainer.scrollWidth / 2) {
+          scrollPositionRef.current = 0
         }
 
-        scrollContainer.scrollLeft = scrollPosition
+        scrollContainer.scrollLeft = scrollPositionRef.current
       }
 
       animationFrameId = requestAnimationFrame(scroll)
