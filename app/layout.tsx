@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter, JetBrains_Mono } from "next/font/google"
+import { Inter, JetBrains_Mono } from 'next/font/google'
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import { GoogleTagManager, GoogleAnalytics } from "@next/third-parties/google"
@@ -56,8 +56,9 @@ export default function RootLayout({
         <GoogleAnalytics gaId="G-F6X35BE0Z6" />
         <Script
           id="callrail"
-          src="//cdn.callrail.com/companies/749077443/e950e0ac177630e8b0b2/12/swap.js"
-          strategy="lazyOnload"
+          src="https://cdn.callrail.com/companies/749077443/e950e0ac177630e8b0b2/12/swap.js"
+          strategy="afterInteractive"
+          async
         />
       </body>
     </html>
