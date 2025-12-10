@@ -36,8 +36,8 @@ export function HeroSection() {
       <section className="relative h-[85vh] flex items-center justify-center text-white overflow-hidden bg-black">
         <div className="absolute inset-0 parallax-bg">
           <Image
-            src="/images/hero-boxing-background.png"
-            alt="X-Zen Sports Boxing Training"
+            src="/images/hero-20image.jpg"
+            alt="X-Zen Sports Muay Thai Training"
             fill
             className="object-cover scale-110"
             priority

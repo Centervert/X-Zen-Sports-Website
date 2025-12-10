@@ -53,7 +53,7 @@ const reviews: Review[] = [
   },
   {
     name: 'Gianna "G" Grimaldi',
-    text: "I've been going to this gym for 2 years and love all the coaches I've worked with! Coaches Chris, Mark, Taylor, Rachel, Cody, Damien, Lamar, David Close, and David Acosta are all fantastic. The front desk team—JT, Priscilla, Destiny, and D—are so sweet. The gym is clean, and the classes are amazing from youth to adults.",
+    text: "I've been going to this gym for 2 years and love all the coaches I've worked with! Coaches Chris, Mark, Taylor, Rachel, Cody, Damien, David Close, and David Acosta are all fantastic. The front desk team—JT, Priscilla, Destiny, and D—are so sweet. The gym is clean, and the classes are amazing from youth to adults.",
     rating: 5,
   },
   {

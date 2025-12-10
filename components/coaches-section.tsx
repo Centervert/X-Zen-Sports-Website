@@ -44,12 +44,6 @@ const departments = {
         specialties: ["Wrestling", "Takedowns", "Conditioning"],
       },
       {
-        name: "LAMAR PARKS",
-        title: "BOXING COACH",
-        image: "/images/lamar-parks.png",
-        specialties: ["Boxing", "Youth Boxing", "Striking"],
-      },
-      {
         name: "MARK KLEMM",
         title: "MUAY THAI COACH",
         image: "/images/mark-klemm.jpg",
